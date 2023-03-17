@@ -33,7 +33,7 @@ $ yarn dev
 
 ```bash
 $ cd allrivers-test
-$ npm link ../allrivers .
+$ sudo npm link ../allrivers .
 ```
 
 ### 构建及发布
