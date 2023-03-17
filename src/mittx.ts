@@ -5,7 +5,7 @@ type EventHandler = echo<void>;
 interface Mitt {
   on(type: string | symbol, handler: EventHandler): () => void;
   off(type: string | symbol, handler: EventHandler): void;
-  emit(type: string | symbol, evt: any): void;
+  emit(type: string | symbol, evt: any): boolean;
   all(): {
     storage: { [key: string]: EventHandler[] };
     keys: (string | undefined)[];
@@ -18,7 +18,7 @@ const toSymbol: echo<symbol> = (value) =>
 /**
  * 监听发布
  */
-const mittx = function mittx(
+export default function mittx(
   storage: { [key: string | symbol]: EventHandler[] } = {}
 ): Mitt {
   storage = isObject(storage) ? storage : Object.create(null);
@@ -39,11 +39,14 @@ const mittx = function mittx(
       }
     },
 
-    emit: function emit(type: string | symbol, evt: any): void {
+    emit: function emit(type: string | symbol, evt: any): boolean {
+      let result = false;
       const sym = toSymbol(type);
       (storage[sym] || []).slice().map(function (handler) {
         handler(evt);
+        result = true;
       });
+      return result;
     },
 
     all: function all(): {
@@ -58,4 +61,4 @@ const mittx = function mittx(
       };
     },
   };
-};
+}
