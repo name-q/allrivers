@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "father dev",
     "build": "father build",
-    "prepublishOnly": "father doctor && npm run build",
+    "prepublishOnly": "father doctor && yarn test && yarn build",
     "test": "jest"
   },
   "keywords": [],
