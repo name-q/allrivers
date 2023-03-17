@@ -23,5 +23,8 @@
   },
   "devDependencies": {
     "father": "^4.1.7"
+  },
+  "peerDependencies": {
+    "immutable": "^4.3.0"
   }
 }
