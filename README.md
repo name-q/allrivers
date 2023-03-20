@@ -6,12 +6,12 @@
 ## Install
 
 ```bash
-$ yarn install
+$ yarn
 ```
 
 ```bash
-$ npm run dev
-$ npm run build
+$ yarn dev
+$ yarn build
 ```
 
 ## Options
