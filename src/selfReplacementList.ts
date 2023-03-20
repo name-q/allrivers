@@ -39,3 +39,5 @@ const getSelfReplacementList: echo<List<any>, selfRootList> = (value) => {
     return selfReplacementList;
   }
 };
+
+export { getSelfReplacementList };
