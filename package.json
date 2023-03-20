@@ -35,7 +35,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2"
   },
-  "peerDependencies": {
+  "dependencies": {
     "immutable": "^4.3.0"
   }
 }
