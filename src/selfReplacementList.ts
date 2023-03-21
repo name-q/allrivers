@@ -1,4 +1,4 @@
-import { List, is } from "immutable";
+import { List, is, isList } from "immutable";
 import { isArray, echo, isObject, isNumber } from "./util";
 
 interface selfRootList {
@@ -16,7 +16,7 @@ interface selfRootList {
 const getSelfReplacementList: echo<List<any>, selfRootList> = (value) => {
   if (!isObject(value)) return List([]);
   let { n, selfReplacementList, target } = value;
-  if (!isArray(selfReplacementList)) return List([]);
+  if (!isList(selfReplacementList)) return List([]);
   n = isNumber(n) && n > 0 ? n : 2;
   let { size } = selfReplacementList;
 
