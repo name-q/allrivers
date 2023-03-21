@@ -1,5 +1,5 @@
 import { List, is, isList } from "immutable";
-import { isArray, echo, isObject, isNumber } from "./util";
+import { echo, isObject, isNumber } from "./util";
 
 interface selfRootList {
   // 自替换系数 - 决定selfReplacementList.size
@@ -40,4 +40,4 @@ const getSelfReplacementList: echo<List<any>, selfRootList> = (value) => {
   }
 };
 
-export { getSelfReplacementList };
+export { getSelfReplacementList, selfRootList };

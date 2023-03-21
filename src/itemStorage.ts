@@ -1,19 +1,21 @@
 // 每个项目的存储
 
 import { fromJS, Map, List } from "immutable";
-import { getSelfReplacementList } from "./selfReplacementList";
+import { getSelfReplacementList, selfRootList } from "./selfReplacementList";
 import { isObject, isString } from "./util";
 
 interface storageKernel {
-  value: List<any>;
+  value: List<selfRootList>;
   n: number;
 }
+
+type itemStorage = Map<string, storageKernel>;
 
 const createItemStorage = (
   key: string,
   value: unknown = {},
   n: number = 2
-): Map<string, storageKernel> => {
+): itemStorage => {
   if (!isString(key)) {
     throw new Error("key must be of string type.");
   }
@@ -30,4 +32,4 @@ const createItemStorage = (
   });
 };
 
-export { createItemStorage };
+export { createItemStorage, itemStorage };
