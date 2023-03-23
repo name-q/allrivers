@@ -17,4 +17,23 @@ const isImmutable: echo<boolean> = (value) => isMap(value) || isList(value);
 const toImmutabl: echo<List<any> | Map<any, any>> = (value) =>
   isImmutable(value) ? value : fromJS(value);
 
-export { isObject, isSymbol, isArray, isNumber, echo, isImmutable, toImmutabl, isString };
+const toInt: echo<number, any> = (value) => {
+  try {
+    value = parseInt(value, 10);
+  } catch (error) {
+    value = 0
+  }
+  return value = value ? value : 0;
+};
+
+export {
+  echo,
+  isObject,
+  isSymbol,
+  isArray,
+  isNumber,
+  isString,
+  isImmutable,
+  toImmutabl,
+  toInt,
+};

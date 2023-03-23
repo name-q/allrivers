@@ -18,7 +18,7 @@ const toSymbol: echo<symbol> = (value) =>
 /**
  * 监听发布
  */
-export default function mittx(
+function mittFunction(
   storage: { [key: string | symbol]: EventHandler[] } = {}
 ): Mitt {
   storage = isObject(storage) ? storage : Object.create(null);
@@ -62,3 +62,5 @@ export default function mittx(
     },
   };
 }
+
+export { mittFunction, toSymbol };
