@@ -38,6 +38,25 @@ class createItemStorage {
     return false;
   }
 
+  // 删除数据 - 内部使用交由总库决策
+  // 此时引发一个猜想 用户 init 后离开页面 clearData 再次回到页面 init 时已存在而报错
+  // 解决方案是用户 init - removeData - init 则clearData没有存在必要
+  // remove会使得内存得到释放但再次注册是一个庞大的工作量
+  // TODO ·故init时如果已存在不应该报错而是使用 clearData 使数据及mittx方法初始化
+  // 基上有两个缺陷 1.用户会在卸载页面和再次回到时两次 clearData
+  // 2.如果init时元数据发生变化则执行 clearData 后不会变化 - 编译时问题比较大
+  // TODO ·改造 clearData data中维护最后一次执行clearData状态 执行其他操作时变为false
+  // ·clearData 接受init时传入uservalue的值 当init时重新计算value并复写value&init后执行剩余的清除操作
+  public removeData(): boolean {
+    try {
+      // @ts-ignore
+      this.data = null
+      // TODO remove mittxfunction
+      return true;
+    } catch {}
+    return false;
+  }
+
   public changeData(): boolean {
     try {
       // TODO change function
