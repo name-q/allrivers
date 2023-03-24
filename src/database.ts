@@ -2,13 +2,16 @@ import { createItemStorage } from "./itemStorage";
 import { toSymbol } from "./mittx";
 import { isString, toInt } from "./util";
 
+interface dataType {
+  [k: symbol]: createItemStorage;
+}
+
 /**
  * 总库
  */
 function database() {
-  let data = Object.create(null);
+  let data: dataType = Object.create(null);
   return {
-
     /**
      * 判断索引是否存在于此数据库
      * @param path 单库路径
@@ -38,16 +41,13 @@ function database() {
         );
       }
       if (this.exist(path)) {
-        throw new Error(
-          `·Single database has already been initialized. 
-          If you need to make changes, please use the methods provided by the single database itself.`
-        );
+        data[toSymbol(path)].clearData({ value, n });
+        return data[toSymbol(path)];
       }
       const storage = new createItemStorage(value, n);
       data[toSymbol(path)] = storage;
       return storage;
     },
-
   };
 }
 
