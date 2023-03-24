@@ -3,7 +3,8 @@
 import { fromJS, Map, List } from "immutable";
 import { getSelfReplacementList } from "./selfReplacementList";
 
-type ItemStorage = Map<string, List<any> | number | undefined>;
+type ItemStorage = Map<string, List<any> | number | undefined | boolean>;
+type returnClearData = "success" | "fail" | "ignore";
 
 class createItemStorage {
   private data: ItemStorage;
@@ -16,9 +17,14 @@ class createItemStorage {
     });
 
     this.data = Map({
+      // 用户数据
       value,
+      // 用户数据初始值
       init: value,
+      // value值的记忆层数
       n,
+      // 刚执行完成 clearData - 防止无意义的再次执行
+      executedClear: false,
     });
   }
 
@@ -29,13 +35,17 @@ class createItemStorage {
    * 同时会将数据绑定的一切方法初始化
    * @returns boolean
    */
-  public clearData(): boolean {
+  public clearData(): returnClearData {
     try {
+      if (this.data.get("executedClear")) {
+        return "ignore";
+      }
+      this.data.set("executedClear", true);
       this.data.set("value", this.data.get("init"));
       // TODO clear mittxfunction
-      return true;
+      return "success";
     } catch {}
-    return false;
+    return "fail";
   }
 
   // 删除数据 - 内部使用交由总库决策
@@ -45,12 +55,12 @@ class createItemStorage {
   // TODO ·故init时如果已存在不应该报错而是使用 clearData 使数据及mittx方法初始化
   // 基上有两个缺陷 1.用户会在卸载页面和再次回到时两次 clearData
   // 2.如果init时元数据发生变化则执行 clearData 后不会变化 - 编译时问题比较大
-  // TODO ·改造 clearData data中维护最后一次执行clearData状态 执行其他操作时变为false
+  // TODO 
   // ·clearData 接受init时传入uservalue的值 当init时重新计算value并复写value&init后执行剩余的清除操作
   public removeData(): boolean {
     try {
       // @ts-ignore
-      this.data = null
+      this.data = null;
       // TODO remove mittxfunction
       return true;
     } catch {}
@@ -59,6 +69,7 @@ class createItemStorage {
 
   public changeData(): boolean {
     try {
+      this.data.set("executedClear", false);
       // TODO change function
       return true;
     } catch {}
