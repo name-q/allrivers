@@ -10,11 +10,7 @@ class createItemStorage {
   private data: ItemStorage;
 
   constructor(userValue: unknown = {}, n: number = 2) {
-    let value = getSelfReplacementList({
-      n,
-      selfReplacementList: List([]),
-      target: fromJS(userValue),
-    });
+    let value = this.getInitValue(userValue, n);
 
     this.data = Map({
       // 用户数据
@@ -28,6 +24,14 @@ class createItemStorage {
     });
   }
 
+  // 用户传入值初始化 - 转自替换List
+  private getInitValue(userValue: unknown, n: number): List<any> {
+    return getSelfReplacementList({
+      n,
+      selfReplacementList: List([]),
+      target: fromJS(userValue),
+    });
+  }
   // TODO 对于数据处理的公共方案 结合mittx
 
   /**
@@ -35,12 +39,21 @@ class createItemStorage {
    * 同时会将数据绑定的一切方法初始化
    * @returns boolean
    */
-  public clearData(): returnClearData {
+  public clearData(init?: { value: unknown; n: number }): returnClearData {
     try {
-      if (this.data.get("executedClear")) {
+
+      // 总库init发现单库存在时触发 - 重制init以及后续清除操作
+      if (init) {
+        let { value, n } = init;
+        let initValue = this.getInitValue(value, n);
+        this.data.set("init", initValue);
+      }
+      // 拦截重复清除操作 - 不拦截总库init下发
+      if (this.data.get("executedClear") && !init) {
         return "ignore";
       }
       this.data.set("executedClear", true);
+      // 数据清除
       this.data.set("value", this.data.get("init"));
       // TODO clear mittxfunction
       return "success";
@@ -49,14 +62,6 @@ class createItemStorage {
   }
 
   // 删除数据 - 内部使用交由总库决策
-  // 此时引发一个猜想 用户 init 后离开页面 clearData 再次回到页面 init 时已存在而报错
-  // 解决方案是用户 init - removeData - init 则clearData没有存在必要
-  // remove会使得内存得到释放但再次注册是一个庞大的工作量
-  // TODO ·故init时如果已存在不应该报错而是使用 clearData 使数据及mittx方法初始化
-  // 基上有两个缺陷 1.用户会在卸载页面和再次回到时两次 clearData
-  // 2.如果init时元数据发生变化则执行 clearData 后不会变化 - 编译时问题比较大
-  // TODO 
-  // ·clearData 接受init时传入uservalue的值 当init时重新计算value并复写value&init后执行剩余的清除操作
   public removeData(): boolean {
     try {
       // @ts-ignore
