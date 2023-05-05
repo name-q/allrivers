@@ -6,7 +6,7 @@ interface Mitt {
   on(type: string | symbol, handler: EventHandler): () => void;
   off(type: string | symbol, handler: EventHandler): void;
   emit(type: string | symbol, evt: any): boolean;
-  clear(type: string | symbol): void;
+  clear(type: Array<string | symbol>): void;
   all(): {
     storage: { [key: string]: EventHandler[] };
     keys: (string | undefined)[];
@@ -50,9 +50,10 @@ function mittFunction(
       return result;
     },
 
-    clear: function clear(type: string | symbol): void {
-      const sym = toSymbol(type);
-      delete storage[sym];
+    clear: function clear(type) {
+      for (const iterator of type) {
+        delete storage[toSymbol(iterator)];
+      }
     },
 
     all: function all(): {
@@ -69,4 +70,4 @@ function mittFunction(
   };
 }
 
-export { mittFunction, toSymbol };
+export { mittFunction, toSymbol, Mitt };
