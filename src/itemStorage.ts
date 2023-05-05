@@ -2,12 +2,15 @@
 
 import { fromJS, Map, List } from "immutable";
 import { getSelfReplacementList } from "./selfReplacementList";
+import { mittFunction, Mitt } from './mittx'
+import { MITTXKEY } from "./constant";
 
 type ItemStorage = Map<string, List<any> | number | undefined | boolean>;
 type returnClearData = "success" | "fail" | "ignore";
 
 class createItemStorage {
   private data: ItemStorage;
+  private msg: Mitt;
 
   constructor(userValue: unknown = {}, n: number = 2) {
     let value = this.getInitValue(userValue, n);
@@ -22,6 +25,7 @@ class createItemStorage {
       // 刚执行完成 clearData - 防止无意义的再次执行
       executedClear: false,
     });
+    this.msg = mittFunction()
   }
 
   // 用户传入值初始化 - 转自替换List
@@ -55,9 +59,10 @@ class createItemStorage {
       this.data.set("executedClear", true);
       // 数据清除
       this.data.set("value", this.data.get("init"));
-      // TODO clear mittxfunction
+      // clear mittxfunction
+      this.msg.clear([MITTXKEY.CHANGES, MITTXKEY.GET, MITTXKEY.SET])
       return "success";
-    } catch {}
+    } catch { }
     return "fail";
   }
 
@@ -66,9 +71,11 @@ class createItemStorage {
     try {
       // @ts-ignore
       this.data = null;
-      // TODO remove mittxfunction
+      this.msg.del();
+      // @ts-ignore
+      this.msg = null
       return true;
-    } catch {}
+    } catch { }
     return false;
   }
 
@@ -77,7 +84,7 @@ class createItemStorage {
       this.data.set("executedClear", false);
       // TODO change function
       return true;
-    } catch {}
+    } catch { }
     return false;
   }
 

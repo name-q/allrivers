@@ -7,6 +7,7 @@ interface Mitt {
   off(type: string | symbol, handler: EventHandler): void;
   emit(type: string | symbol, evt: any): boolean;
   clear(type: Array<string | symbol>): void;
+  del(): void;
   all(): {
     storage: { [key: string]: EventHandler[] };
     keys: (string | undefined)[];
@@ -54,6 +55,11 @@ function mittFunction(
       for (const iterator of type) {
         delete storage[toSymbol(iterator)];
       }
+    },
+
+    del: function del() {
+      // @ts-ignore
+      storage = null
     },
 
     all: function all(): {
